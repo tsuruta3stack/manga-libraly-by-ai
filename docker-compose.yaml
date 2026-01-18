@@ -6,7 +6,6 @@ services:
       - "8000:8000"
     volumes:
       # ホスト側の ./app/data を コンテナ内の /app/app/data に繋ぐ
-      # (Dockerfileで WORKDIR /app としている場合、パスは /app/app/data になります)
       - ./app/data:/app/app/data 
       # 開発中にコードを即時反映させたい場合
       - .:/app 
