@@ -10,8 +10,7 @@ def get_embedding(model_type="ollama"):
     if model_type == "openai":
         return OpenAIEmbeddings(
             model=settings.OPENAI_EMBEDDING_MODEL,
-            api_key=settings.OPENAI_API_KEY,
-            temperature=0
+            api_key=settings.OPENAI_API_KEY
         )
     else:
         return OllamaEmbeddings(
