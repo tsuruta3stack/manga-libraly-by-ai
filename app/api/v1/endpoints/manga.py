@@ -90,3 +90,12 @@ async def seed_database(background_tasks: BackgroundTasks, limit: int = 300):
     background_tasks.add_task(run_full_seed_pipeline, limit)
     
     return {"message": f"Started seeding process for {limit} mangas in background."}
+
+@router.delete("/delete_all_manga_data")
+def delete_all_manga_data(service: MangaService = Depends(get_manga_service)):
+    """
+    作成した漫画データをすべて削除します。
+    """
+    service.delete_all_manga_data()
+    return {"message": "All manga data has been deleted."}
+

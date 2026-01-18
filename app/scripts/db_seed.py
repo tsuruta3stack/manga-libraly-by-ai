@@ -210,3 +210,5 @@ def run_full_seed_pipeline(limit: int):
         
     # 4. ベクトル同期 (既存関数)
     sync_vector_store_batch(vectorDB)
+
+# run_full_seed_pipeline(10)

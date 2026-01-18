@@ -21,8 +21,8 @@ async def lifespan(app: FastAPI):
 
 # FastAPIアプリケーションのインスタンスを作成
 app = FastAPI(
-    title="contents know",
-    description="コンテンツ消費を支える独立した脳みそ",
+    title="manga_libraly_by_ai",
+    description="AIによるパーソナルな漫画ライブラリ",
     version="0.0.1",
     lifespan=lifespan
 )

@@ -163,3 +163,10 @@ class MangaService:
         """漫画の件数を取得します。"""
         statement = select(Manga)
         return len(self.session.exec(statement).all())
+    
+    def delete_all_manga_data(self):
+        """漫画データを削除します"""
+        if self.vectorDB:
+            self.vectorDB.delete_collection()
+        self.session.delete_all(Manga)
+        self.session.commit()
