@@ -57,8 +57,21 @@ docker-compose up -d
 - フロントエンド(**Streamlit**): http://localhost:8501
 - バックエンド(**Swagger UI**): http://localhost:8000
 #### 5. データの初期化
- 1. Swagger UIにアクセス
- 2. 
+ 1. Swagger UI:http://localhost:8000 にアクセス
+ 2. post/api/v1/manga/seed の「Try it out」ボタンを押す
+ 3. limitに初期作成するデータの数を入れる
+ 4. 「Excute」を入れる
+ 5. 下記の順番で処理が進む
+    1. Jikan APIからのデータ取得
+    2. LLMによる翻訳・項目追加とSQLiteへの書き込み
+    3. Embeddingによるベクトル化とChromaDBへの書き込み
+ 6. post/api/v1/manga/get_manga_countで登録済みの件数を確認可能
+
+#### 注意事項
+- データの初期化: 初期化にはそれなりに時間がかかります。(作者環境で約1.5時間/300件)
+- LLMの消費トークン: 初期化時には漫画1つあたり、約45,000文字の日本語を入出力します。
+- データの永続化: Dockerコンテナを削除してもデータが消えないよう、app/data フォルダはホスト側とボリュームマウントして管理しています。
+
 ## システム構成図
 - **検索のハイブリッド化:** 
   明確な条件（タイトルやタグ）での検索には **SQLite** を使用し、ユーザーの曖昧な意図や「雰囲気」での検索には **ChromaDB（ベクトル検索）** を使用する、用途に応じた使い分けを実装しました。
@@ -150,3 +163,9 @@ graph TB
 - **マルチソース検索:** Tavilly APIなどを統合し、DB/API外の情報を取得できるようにする。
 - **質問ノード:** エージェントがユーザーに逆質問を行うノードを追加し、精度の向上を図る。
 - **自己評価ノード:** 最終チェックをするノードを追加し、ハルシネーションを防止する。
+
+## 出展
+本アプリケーションで使用している漫画データは、[Jikan API](https://jikan.moe/) を通じて [MyAnimeList](https://myanimelist.net/) より取得しています。
+- **Data Provider:** [MyAnimeList.net](https://myanimelist.net/)
+- **API Service:** [Jikan API](https://jikan.moe/) (Unofficial MyAnimeList API)
+このプロジェクトは学習および個人利用を目的としており、取得したデータの著作権は各権利者に帰属します。
