@@ -17,5 +17,5 @@ env/
 # エディタ設定
 .vscode/
 *.code-workspace
-.DS_Store (Macの場合)
+.DS_Store
 fastapi.code-workspace
