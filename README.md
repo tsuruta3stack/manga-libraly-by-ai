@@ -39,7 +39,7 @@ cp .env.example .env
 LLM_TYPE = ollama # ollama or openai
 
 # --- Ollama Settings ---
-OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_BASE_URL=http://host.docker.internal:11434 #ollamaを起動しているPCでdockerを立ち上げる場合
 OLLAMA_MODEL=gemma3:12b
 OLLAMA_EMBEDDING_MODEL=embeddinggemma
 
@@ -165,6 +165,9 @@ graph TB
 
 ## 出展
 本アプリケーションで使用している漫画データは、[Jikan API](https://jikan.moe/) を通じて [MyAnimeList](https://myanimelist.net/) より取得しています。
+このプロジェクトは学習および個人利用を目的としており、取得したデータの著作権は各権利者に帰属します。
 - **Data Provider:** [MyAnimeList.net](https://myanimelist.net/)
 - **API Service:** [Jikan API](https://jikan.moe/) (Unofficial MyAnimeList API)
-このプロジェクトは学習および個人利用を目的としており、取得したデータの著作権は各権利者に帰属します。
+
+## 開発プロセス
+本システムは、AI（Gemini）との対話、及びAIによるコーディングを通じてアジャイルに開発されました。
