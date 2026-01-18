@@ -145,14 +145,11 @@ graph TB
 
     %% データの接続先を補足
     subgraph ChromaDB [ChromaDB]
-	    tag[(ジャンル・タグ)]
-	    summary[(あらすじ)]
+	    vector[(漫画のベクトル)]
 	end
 	
     M_Search -.->|Query| ChromaDB
     ChromaDB -.->|Context| M_Search
-
-    style Agent_Logic fill:#f5f5f5,stroke:#666,stroke-dasharray: 5 5
 ```
 
 ## 今後の展望
