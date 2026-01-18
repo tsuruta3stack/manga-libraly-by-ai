@@ -64,8 +64,9 @@ docker-compose up -d
  1. Swagger UI:http://localhost:8000 にアクセス
  2. post/api/v1/manga/seed の「Try it out」ボタンを押す
  3. limitに初期作成するデータの数を入れる
- 4. 「Excute」を入れる
- 5. 下記の順番で処理が進む
+ 4. 「Excute」を押す
+ 5. 「Started seeding process for...」が返される
+ 6. バックグラウンドで下記の順番で処理が進むため暫く待つ
     1. Jikan APIからのデータ取得
     2. LLMによる翻訳・項目追加とSQLiteへの書き込み
     3. Embeddingによるベクトル化とChromaDBへの書き込み
