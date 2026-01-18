@@ -122,10 +122,6 @@ graph TD
     
     %% ベクトルデータの格納
     Vectorize -->|ベクトル + メタデータ| Chroma
-
-    %% 注釈
-    classDef llm fill:#f9f,stroke:#333,stroke-width:2px;
-    class LLM_Process llm;
 ```
 
 ## エージェント設計（LangGraph）
