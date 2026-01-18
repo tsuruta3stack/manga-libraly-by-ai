@@ -1,0 +1,22 @@
+# Python キャッシュ
+__pycache__/
+*.pyc
+app/**/__pycache__/
+
+# DB・データ関連 (RDBとベクトルDBの実データは除外)
+app/data/
+app/data_backup/
+
+# 仮想環境
+.venv/
+venv/
+env/
+
+# 設定・秘匿情報
+.env
+
+# エディタ設定
+.vscode/
+*.code-workspace
+.DS_Store (Macの場合)
+fastapi.code-workspace
