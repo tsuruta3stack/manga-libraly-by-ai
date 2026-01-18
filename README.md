@@ -32,6 +32,10 @@ cd manga_libraly_by_ai
 #### 2. 環境変数の設定
 変更が必要な箇所のみ書き換えてください。
 ```bash
+# .envファイルをコピー
+cp .env.example .env
+
+# .envファイルを作成して以下を設定
 LLM_TYPE = ollama # ollama or openai
 
 # --- Ollama Settings ---
