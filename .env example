@@ -1,0 +1,16 @@
+LLM_TYPE = ollama # ollama or openai
+
+# --- Ollama Settings ---
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=gemma3:12b
+OLLAMA_EMBEDDING_MODEL=embeddinggemma
+
+# --- OpenAI Settings ---
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxx
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+
+# --- Database Settings ---
+SQLITE_URL=sqlite:///./app/data/manga.db
+CHROMA_URL=./app/data/chroma
+
