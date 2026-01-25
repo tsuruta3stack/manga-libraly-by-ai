@@ -11,7 +11,7 @@ from typing import List
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from sqlmodel import select
-from app.scripts.db_seed import run_full_seed_pipeline
+from app.scripts.db_seed import run_full_seed_pipeline, run_full_seed_pipeline_review_sumarize
 
 router = APIRouter()
 
@@ -88,6 +88,17 @@ async def seed_database(background_tasks: BackgroundTasks, limit: int = 1000):
     """
     # 非同期でパイプラインを実行
     background_tasks.add_task(run_full_seed_pipeline, limit)
+    
+    return {"message": f"Started seeding process for {limit} mangas in background."}
+
+@router.post("/seed_review_sumarize")
+async def seed_database(background_tasks: BackgroundTasks, limit: int = 1000):
+    """
+    Jikan APIからデータを取得し、LLM加工・DB格納をバックグラウンドで開始します。既にあるデータはスキップされます。
+    reviewを一度要約することで、処理時間と情報密度の向上を図ります。
+    """
+    # 非同期でパイプラインを実行
+    background_tasks.add_task(run_full_seed_pipeline_review_sumarize, limit)
     
     return {"message": f"Started seeding process for {limit} mangas in background."}
 

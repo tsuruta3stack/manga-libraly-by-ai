@@ -65,6 +65,49 @@ def fetch_manga_reviews(manga_list):
         time.sleep(2) # Rate Limit回避
     return manga_list_with_reviews
 
+# 2.5 (ollama利用前提)reviewを原文のまま扱うとコンテキストサイズが足りなくなるため、reviewを一つ一つ要約して使う
+#     そのため、reviewを文字数ではなく件数で制限を掛ける
+class AIreviewsummaryOutput(BaseModel):
+    review: str
+
+def fetch_manga_reviews_and_summarize(manga_list):
+    """reviewを要約させる"""
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", """
+         [Role]
+         あなたは漫画のレビューを適切に解釈し翻訳・要約するエキスパートです。
+         [Task]
+         - 英語のreview(感想)を日本語で500文字程度に要約し出力してください。
+         [Output]
+            - review: 要約した日本語の感想
+         """
+         ),
+         ("human", """
+         [漫画のreview]
+            - review: {review}
+          """
+        )
+    ])
+    chain = prompt | llm.with_structured_output(AIreviewsummaryOutput)
+
+    manga_list_with_reviews = []
+    base_url = "https://api.jikan.moe/v4/manga/"
+    for i, manga in enumerate(manga_list):
+        print(f"---{i+1}/{len(manga_list)}件目のレビューを取得中---")
+        response = requests.get(f"{base_url}{manga['mal_id']}/reviews?preliminary=true")
+        data = response.json().get('data', [])
+        review_list = [item.get('review') for item in data]
+        review_count = 12 # 500*12の6000文字を想定
+        sumarized_review_list = []
+        for review in review_list[:review_count]:
+            response = chain.invoke({"review": review})
+            sumarized_review_list.append(response.review)
+        reviews = "\n\n---\n\n".join(sumarized_review_list)
+        manga.update({"reviews": reviews})
+        manga_list_with_reviews.append(manga)
+        # time.sleep(2) # Rate Limit回避 #要約処理で時間がかかるため不要
+    return manga_list_with_reviews
+
 # 3 llmに翻訳＆コメントさせる
 class AICommentOutput(BaseModel):
     synopsis_ja: str
@@ -202,6 +245,25 @@ def run_full_seed_pipeline(limit: int):
     # 2. API取得 (既存関数)
     raw_data = fetch_top_manga(limit)
     raw_data_with_reviews = fetch_manga_reviews(raw_data)
+    # raw_data_with_reviews = fetch_manga_reviews_and_summarize(raw_data)
+    
+    # 3. SQLite保存 (既存関数を少し修正：ID重複チェックを入れる)
+    with Session(engine) as session:
+        manga_service = MangaService(session, vectorDB)
+        save_manga_to_sqlite(raw_data_with_reviews, manga_service)
+        
+    # 4. ベクトル同期 (既存関数)
+    sync_vector_store_batch(vectorDB)
+
+# 4.5. 実行関数(レビューサマリー版)
+def run_full_seed_pipeline_review_sumarize(limit: int):
+    # 1. テーブル作成
+    create_db_and_tables()
+    
+    # 2. API取得 (既存関数)
+    raw_data = fetch_top_manga(limit)
+    # raw_data_with_reviews = fetch_manga_reviews(raw_data)
+    raw_data_with_reviews = fetch_manga_reviews_and_summarize(raw_data)
     
     # 3. SQLite保存 (既存関数を少し修正：ID重複チェックを入れる)
     with Session(engine) as session:
