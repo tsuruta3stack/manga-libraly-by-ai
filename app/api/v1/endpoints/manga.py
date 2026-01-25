@@ -82,7 +82,7 @@ def get_manga_count(service: MangaService = Depends(get_manga_service)):
     return service.get_manga_count()
 
 @router.post("/seed")
-async def seed_database(background_tasks: BackgroundTasks, limit: int = 300):
+async def seed_database(background_tasks: BackgroundTasks, limit: int = 1000):
     """
     Jikan APIからデータを取得し、LLM加工・DB格納をバックグラウンドで開始します。既にあるデータはスキップされます。
     """
@@ -90,4 +90,12 @@ async def seed_database(background_tasks: BackgroundTasks, limit: int = 300):
     background_tasks.add_task(run_full_seed_pipeline, limit)
     
     return {"message": f"Started seeding process for {limit} mangas in background."}
+
+@router.delete("/delete_all_manga")
+async def delete_all_manga(service: MangaService = Depends(get_manga_service)):
+    """
+    登録した漫画データを完全に消去します。(初期化時に利用)
+    """
+    service.delete_manga_db()
+    return {"message": f"deleted all manga."}
 

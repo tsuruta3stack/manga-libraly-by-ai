@@ -2,12 +2,14 @@
 漫画情報に関するビジネスロジックを処理するサービスクラス。
 データベースセッションとベクトルDBクライアントを操作します。
 """
+import os
 from datetime import datetime
 from typing import Optional, List
 from sqlmodel import Session, select, col, or_, desc
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from app.models.manga import Manga, MangaCreate, MangaUpdate, MangaSearchKeywordParams, MangaSearchQueryParams, MangaSearchVectorParams
+from app.core.config import settings
 
 class MangaService:
     """漫画サービスのクラス"""
@@ -163,3 +165,9 @@ class MangaService:
         """漫画の件数を取得します。"""
         statement = select(Manga)
         return len(self.session.exec(statement).all())
+    
+    def delete_manga_db(self) -> None:
+        """漫画のデータベースを削除します。"""
+        if os.path.exists(settings.SQLITE_URL):
+            os.remove(settings.SQLITE_URL)
+            os.remove(settings.CHROMA_URL)
